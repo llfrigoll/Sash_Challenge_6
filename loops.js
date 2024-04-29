@@ -22,22 +22,23 @@ const getDaysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 
 const createArray = (length) => {
     const result = []
 
-    for (let  = ; i < length; i) {
-        result.push()
+    for (let i = 0; i < length; i++) {
+        result.push(i)
     }
 
     return result
 }
 
-const createData = () > {
-    const current = new ()
-    current.set(1)
+const createData = () => {
+    const current = new Date()
+    //current.setMonth(2)
+    current.setDate(1)
 
-    const startDay = current.get()
+    const startDay = current.getDay()
     const daysInMonth = getDaysInMonth(current)
 
-    const weeks = createArray(5)
-    const days = ()
+    const weeks = createArray(6)
+    const daysInWeek = createArray(7)
     const result = []
 
     for (const weekIndex of weeks) {
@@ -46,8 +47,8 @@ const createData = () > {
             days: []
         })
 
-        for (const  of ) {
-            const day = (dayIndex - startDay) : (weekIndex * 7)  1
+        for (const dayIndex of daysInWeek) {
+            const day = (dayIndex - startDay) ? (weekIndex * 7 + (dayIndex - startDay + 1)) : weekIndex * 7 + 1
             const isValid = day > 0 && day <= daysInMonth
 
             result[weekIndex].days.push({
@@ -56,13 +57,13 @@ const createData = () > {
             })
         }
     }
-
+    
     return result
 }
 
 const addCell = (existing, classString, value) => {
-    const result = /* html */ `
-        ${}
+    const result =  /*html*/  `
+        ${existing}
 
         <td class="${classString}">
             &nbsp;${value}&nbsp;
@@ -75,27 +76,29 @@ const addCell = (existing, classString, value) => {
 const createHtml = (data) => {
     let result = ''
 
-    for (const { week,  } of ) {
+    for (const {week, days} of data) {
         let inner = ""
+        
         inner = addCell(inner, 'table__cell table__cell_sidebar', `Week ${week}`)
-    
-         (const { dayOfWeek, value } of days) {
+        
+        for (const {dayOfWeek, value} of days) {
             const isToday = new Date().getDate() === value
-            const isWeekend = dayOfWeek ===  | dayOfWeek === 
+            const isWeekend = dayOfWeek === 1 | dayOfWeek === 7
             const isAlternate = week % 2 === 0
             
 						let classString = 'table__cell'
+       
+            if (isWeekend && !isToday) classString = `${classString} table__cell_weekend`
+            if (isToday) classString = `${classString} table__cell_today`
+            if (isAlternate) classString = `${classString} table__cell_alternate`
 
-            if () classString = `${} table__cell_`
-            if () classString = `${} table__cell_`
-            if () classString = `${} table__cell_`
-            inner = addCell()
+            inner = addCell(inner, classString, value)
         }
 
-        result = `
+        result = !(week > 1 && days[0].value === "") ? `
             ${result}
             <tr>${inner}</tr>
-        `
+        ` : result;
     }
     
     return result
