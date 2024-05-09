@@ -90,7 +90,7 @@ const createHtml = (data) => {
        
             if (isWeekend && !isToday) classString = `${classString} table__cell_weekend`
             if (isToday) classString = `${classString} table__cell_today`
-            if (isAlternate) classString = `${classString} table__cell_alternate`
+            if (isAlternate && !isToday) classString = `${classString} table__cell_alternate`
 
             inner = addCell(inner, classString, value)
         }
